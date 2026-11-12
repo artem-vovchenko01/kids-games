@@ -6,6 +6,11 @@
 <title>Гонка Колесо — гра для двох на одній клавіатурі</title>
 <meta name="description" content="Безкоштовна дитяча гонка для двох гравців на одній клавіатурі або планшеті. Без реклами, без реєстрації, грає прямо в браузері.">
 <link rel="canonical" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/">
+<link rel="alternate" hreflang="uk" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/?lang=uk">
+<link rel="alternate" hreflang="en" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/?lang=en">
+<link rel="alternate" hreflang="pl" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/?lang=pl">
+<link rel="alternate" hreflang="ru" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://artem-vovchenko01.github.io/kids-games/games/koleso/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Гонка Колесо">
 <meta property="og:description" content="Дитяча гонка для двох на одній клавіатурі. Без реклами.">
@@ -15,13 +20,15 @@
 <style>
 html{box-sizing:border-box}
 body{margin:0}
-.back{color:var(--muted);text-decoration:none;font-size:14px;align-self:flex-start}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.back{color:var(--muted);text-decoration:none;font-size:14px}
 .back:hover{color:var(--ink)}
+.lang select{font:inherit;font-size:14px;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:3px 6px;cursor:pointer}
 </style>
 </head>
 <body>
 <style>
-/* Layout: pit-wall timing board on top (one column per driver), full track below, key legend under it. Single dark look by choice. */
+/* Layout: pit-wall timing board on top (one column per driver), full track below, controls under it. Single dark look by choice. Text sizes are in rem, so a larger browser font grows them; nothing clips at large sizes. */
 :root{
   --pit:#15171c; --board:#20232b; --line:#343844; --ink:#f2f3f5; --muted:#9aa0ad;
   --p1:#ffc93c; --p2:#3d8bff; --kerb:#e63946;
@@ -31,82 +38,157 @@ body{margin:0}
 }
 html,body{background:var(--pit);color:var(--ink)}
 [hidden]{display:none!important}
-body{font-family:var(--body);font-size:15px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 24px}
+body{font-family:var(--body);font-size:.9375rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 24px}
 .wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .board{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
 .drv{background:var(--board);border-radius:4px;padding:10px 14px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;min-width:0;border-top:4px solid var(--c)}
 .drv.p1{--c:var(--p1)} .drv.p2{--c:var(--p2)}
-.drv .pos{grid-row:span 3;font-family:var(--display);font-size:clamp(26px,5vw,40px);color:var(--c);line-height:1;align-self:center}
-.drv .nm{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:var(--c)}
-.drv .row{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.drv .row b{color:var(--ink);font-weight:600}
+.drv .pos{grid-row:span 3;font-family:var(--display);font-size:clamp(1.6rem,5vw,2.5rem);color:var(--c);line-height:1;align-self:center}
+.drv .nm{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.8125rem;color:var(--c);overflow-wrap:anywhere}
+.drv .row{font-size:.8125rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.drv .row b{color:var(--ink);font-weight:600;white-space:nowrap}
 .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(16px,3vw,24px);margin:0;letter-spacing:.02em;text-wrap:balance}
-.clock{font-family:var(--display);font-size:clamp(14px,2.4vw,18px);color:var(--muted);font-variant-numeric:tabular-nums}
-.stage{position:relative;width:100%;max-width:100%;aspect-ratio:8/5;border-radius:4px;overflow:hidden;box-shadow:0 0 0 2px var(--line)}
-canvas{display:block;width:100%;height:100%;background:var(--pit)}
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(21,23,28,.8);text-align:center;padding:16px}
-.overlay h2{font-family:var(--display);font-weight:400;font-size:clamp(22px,5vw,42px);margin:0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1rem,3vw,1.5rem);margin:0;letter-spacing:.02em;text-wrap:balance}
+.clock{font-family:var(--display);font-size:clamp(.875rem,2.4vw,1.125rem);color:var(--muted);font-variant-numeric:tabular-nums}
+/* Canvas and overlay share one grid cell, so a tall start screen grows the box instead of clipping. */
+.stage{display:grid;width:100%;border-radius:4px;overflow:hidden;box-shadow:0 0 0 2px var(--line);background:var(--pit)}
+.stage>*{grid-area:1/1}
+canvas{display:block;width:100%;aspect-ratio:8/5;align-self:center}
+.overlay{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(21,23,28,.8);text-align:center;padding:16px;min-width:0}
+.overlay h2{font-family:var(--display);font-weight:400;font-size:clamp(1.375rem,5vw,2.625rem);margin:0;text-wrap:balance}
 .overlay p{margin:0;color:var(--muted);max-width:52ch;font-variant-numeric:tabular-nums}
 .laps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.laps button{font-family:var(--body);font-weight:600;font-size:14px;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:8px 14px;cursor:pointer}
+.laps button{font-family:var(--body);font-weight:600;font-size:.875rem;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:8px 14px;cursor:pointer}
 .laps button[aria-pressed="true"]{border-color:var(--p1);color:var(--p1)}
-button.go{font-family:var(--display);font-size:18px;color:var(--pit);background:var(--p1);border:0;border-radius:4px;padding:12px 28px;cursor:pointer}
+button.go{font-family:var(--display);font-size:1.125rem;color:var(--pit);background:var(--p1);border:0;border-radius:4px;padding:12px 28px;cursor:pointer}
 button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .legend div{background:var(--board);border-radius:4px;padding:10px 14px;min-width:0}
-.legend b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.legend b{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
 .legend .p1 b{color:var(--p1)} .legend .p2 b{color:var(--p2)}
-kbd{font-family:var(--body);font-size:12px;background:var(--line);border-radius:3px;padding:1px 6px;color:var(--ink)}
-.rules{color:var(--muted);font-size:13px;margin:0;max-width:65ch}
-.pads{display:none;grid-template-columns:1fr 1fr;gap:12px}
-.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.pad button{font-size:22px;height:56px;border-radius:8px;border:2px solid currentColor;background:var(--board);touch-action:none;user-select:none;-webkit-user-select:none}
-.pad.p1 button{color:var(--p1)} .pad.p2 button{color:var(--p2)}
-.pad button.on{background:currentColor}
-@media (pointer:coarse){.pads{display:grid}}
-@media (max-width:600px){.board{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1}.legend,.pads{grid-template-columns:1fr}}
+kbd{font-family:var(--body);font-size:.75rem;background:var(--line);border-radius:3px;padding:1px 6px;color:var(--ink)}
+.rules{color:var(--muted);font-size:.8125rem;margin:0;max-width:65ch}
+.pads{display:none;grid-template-columns:1fr 1fr;gap:12px;justify-items:center}
+.pad{--size:clamp(110px,36vw,160px);position:relative;width:var(--size);height:var(--size);border-radius:50%;border:3px solid var(--c);background:var(--board);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.pad.p1{--c:var(--p1)} .pad.p2{--c:var(--p2)}
+.knob{position:absolute;left:29%;top:29%;width:42%;height:42%;border-radius:50%;background:var(--c);opacity:.85;pointer-events:none;transform:translate(var(--x,0px),var(--y,0px))}
+@media (pointer:coarse){
+  .pads{display:grid}
+  .legend{display:none}
+  .stage{-webkit-user-select:none;user-select:none}
+}
+@media (max-width:600px){.board{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1}.legend{grid-template-columns:1fr}}
+/* Phone or tablet held sideways: one joystick on each side of the track, for two kids. */
+@media (pointer:coarse) and (orientation:landscape){
+  body{padding-block:8px}
+  .wrap{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"top top top" "board board board" "p1 stage p2" "rules rules rules";gap:8px 12px;align-items:center;max-width:none}
+  .top{grid-area:top} .board{grid-area:board} .rules{grid-area:rules}
+  .board{grid-template-columns:1fr auto 1fr}.mid{grid-column:auto;grid-row:auto}
+  .drv{padding:4px 10px}.drv .pos{font-size:1.5rem}
+  .stage{grid-area:stage;justify-self:center;width:min(100%,calc((100svh - 130px) * 1.6))}
+  .pads{display:contents}
+  .pad{--size:min(150px,40svh,22vw)}
+  .pad.p1{grid-area:p1} .pad.p2{grid-area:p2}
+}
 </style>
 
 <div class="wrap">
-  <a class="back" href="../../">← Усі ігри</a>
+  <div class="top">
+    <a class="back" href="../../" data-i18n="back">← Усі ігри</a>
+    <label class="lang">🌐 <select class="lang-pick" data-i18n-attr="aria-label:language"></select></label>
+  </div>
   <div class="board">
-    <div class="drv p1"><span class="pos" id="pos1">1</span><span class="nm">Жовтий</span><span class="row">Коло <b id="lap1">1/3</b></span><span class="row">Краще <b id="best1">—</b></span></div>
-    <div class="mid"><h1>Гонка Колесо</h1><span class="clock" id="clock">0:00.00</span></div>
-    <div class="drv p2"><span class="pos" id="pos2">2</span><span class="nm">Синій</span><span class="row">Коло <b id="lap2">1/3</b></span><span class="row">Краще <b id="best2">—</b></span></div>
+    <div class="drv p1"><span class="pos" id="pos1">1</span><span class="nm" data-i18n="p1">Жовтий</span><span class="row"><span data-i18n="lap">Коло</span> <b id="lap1">1/3</b></span><span class="row"><span data-i18n="best">Краще</span> <b id="best1">—</b></span></div>
+    <div class="mid"><h1 data-i18n="name">Гонка Колесо</h1><span class="clock" id="clock">0:00.00</span></div>
+    <div class="drv p2"><span class="pos" id="pos2">2</span><span class="nm" data-i18n="p2">Синій</span><span class="row"><span data-i18n="lap">Коло</span> <b id="lap2">1/3</b></span><span class="row"><span data-i18n="best">Краще</span> <b id="best2">—</b></span></div>
   </div>
 
   <div class="stage">
-    <canvas id="track" aria-label="Траса для двох гонщиків"></canvas>
+    <canvas id="track" data-i18n-attr="aria-label:track"></canvas>
     <div class="overlay" id="overlay">
       <h2 id="ovTitle">Гонка Колесо</h2>
-      <p id="ovText">Дві машини, одна клавіатура. Хто перший проїде всі кола, той переміг.</p>
+      <p id="ovText"></p>
       <div class="laps" id="lapsPick">
-        <button data-l="3" aria-pressed="true">3 кола</button>
-        <button data-l="5" aria-pressed="false">5 кіл</button>
-        <button data-l="10" aria-pressed="false">10 кіл</button>
+        <button data-l="3" aria-pressed="true" data-i18n="laps3">3 кола</button>
+        <button data-l="5" aria-pressed="false" data-i18n="laps5">5 кіл</button>
+        <button data-l="10" aria-pressed="false" data-i18n="laps10">10 кіл</button>
       </div>
       <div class="laps" id="modePick">
-        <button data-m="simple" aria-pressed="true">Просте керування</button>
-        <button data-m="car" aria-pressed="false">Як у машині</button>
+        <button data-m="simple" aria-pressed="true" data-i18n="modeSimple">Просте керування</button>
+        <button data-m="car" aria-pressed="false" data-i18n="modeCar">Як у машині</button>
       </div>
       <button class="go" id="goBtn">Старт</button>
     </div>
   </div>
 
   <div class="pads" aria-hidden="true">
-    <div class="pad p1"><button data-k="KeyA">◀</button><button data-k="KeyS">▼</button><button data-k="KeyW">▲</button><button data-k="KeyD">▶</button></div>
-    <div class="pad p2"><button data-k="ArrowLeft">◀</button><button data-k="ArrowDown">▼</button><button data-k="ArrowUp">▲</button><button data-k="ArrowRight">▶</button></div>
+    <div class="pad p1"><div class="knob"></div></div>
+    <div class="pad p2"><div class="knob"></div></div>
   </div>
 
   <div class="legend">
-    <div class="p1"><b>Жовтий</b><span id="leg1"></span></div>
-    <div class="p2"><b>Синій</b><span id="leg2"></span></div>
+    <div class="p1"><b data-i18n="p1">Жовтий</b><span id="leg1"></span></div>
+    <div class="p2"><b data-i18n="p2">Синій</b><span id="leg2"></span></div>
   </div>
-  <p class="rules">На траві машина сильно гальмує. Зрізати через газон не вийде: коло рахується тільки по трасі. Машини штовхаються, тож можна виштовхнути суперника.</p>
+  <p class="rules" data-i18n="rules">На траві машина сильно гальмує. Зрізати через газон не вийде: коло рахується тільки по трасі. Машини штовхаються, тож можна виштовхнути суперника.</p>
 </div>
 
+<script src="../../lang.js"></script>
 <script>
+const TEXTS={
+  uk:{
+    title:'Гонка Колесо — гра для двох на одній клавіатурі',
+    description:'Безкоштовна дитяча гонка для двох гравців на одній клавіатурі, телефоні чи планшеті. Без реклами, без реєстрації.',
+    language:'Мова',back:'← Усі ігри',name:'Гонка Колесо',track:'Траса для двох гонщиків',
+    p1:'Жовтий',p2:'Синій',lap:'Коло',best:'Краще',
+    intro:'Дві машини, одна клавіатура чи один екран. Хто перший проїде всі кола, той переміг.',
+    laps3:'3 кола',laps5:'5 кіл',laps10:'10 кіл',modeSimple:'Просте керування',modeCar:'Як у машині',
+    start:'Старт',again:'Ще заїзд',go:'ГАЗ!',startFinish:'СТАРТ / ФІНІШ',
+    wins:'перемагає!',result:'Час {time}. Краще коло: {w}, {o}.',behind:'Суперник відстав на {n} кола.',
+    up:'вгору',down:'вниз',left:'вліво',right:'вправо',simpleTail:'Машина їде туди, куди натиснули.',
+    gas:'газ',brake:'гальмо',steer:'кермо',
+    rules:'На траві машина сильно гальмує. Зрізати через газон не вийде: коло рахується тільки по трасі. Машини штовхаються, тож можна виштовхнути суперника.'
+  },
+  en:{
+    title:'Wheel Race — a two-player game on one keyboard',
+    description:'A free racing game for two kids on one keyboard, phone or tablet. No ads, no sign-up.',
+    language:'Language',back:'← All games',name:'Wheel Race',track:'Track for two racers',
+    p1:'Yellow',p2:'Blue',lap:'Lap',best:'Best',
+    intro:'Two cars, one keyboard or one screen. First to finish all the laps wins.',
+    laps3:'3 laps',laps5:'5 laps',laps10:'10 laps',modeSimple:'Simple controls',modeCar:'Like a real car',
+    start:'Start',again:'Race again',go:'GO!',startFinish:'START / FINISH',
+    wins:'wins!',result:'Time {time}. Best lap: {w}, {o}.',behind:'The rival was {n} laps behind.',
+    up:'up',down:'down',left:'left',right:'right',simpleTail:'The car drives where you press.',
+    gas:'gas',brake:'brake',steer:'steer',
+    rules:"On the grass the car slows down a lot. Cutting across the lawn won't work: a lap only counts along the track. Cars push each other, so you can bump your rival off."
+  },
+  pl:{
+    title:'Wyścig Koło — gra dla dwóch osób na jednej klawiaturze',
+    description:'Darmowa wyścigówka dla dwójki dzieci na jednej klawiaturze, telefonie lub tablecie. Bez reklam i bez rejestracji.',
+    language:'Język',back:'← Wszystkie gry',name:'Wyścig Koło',track:'Tor dla dwóch kierowców',
+    p1:'Żółty',p2:'Niebieski',lap:'Okrążenie',best:'Najlepsze',
+    intro:'Dwa samochody, jedna klawiatura albo jeden ekran. Kto pierwszy przejedzie wszystkie okrążenia, wygrywa.',
+    laps3:'3 okrążenia',laps5:'5 okrążeń',laps10:'10 okrążeń',modeSimple:'Proste sterowanie',modeCar:'Jak w samochodzie',
+    start:'Start',again:'Jeszcze raz',go:'JAZDA!',startFinish:'START / META',
+    wins:'wygrywa!',result:'Czas {time}. Najlepsze okrążenie: {w}, {o}.',behind:'Rywal został w tyle o {n} okrążenia.',
+    up:'w górę',down:'w dół',left:'w lewo',right:'w prawo',simpleTail:'Samochód jedzie tam, gdzie naciśniesz.',
+    gas:'gaz',brake:'hamulec',steer:'skręt',
+    rules:'Na trawie samochód mocno zwalnia. Skrót przez trawnik nic nie da: okrążenie liczy się tylko po torze. Samochody się przepychają, więc możesz wypchnąć rywala.'
+  },
+  ru:{
+    title:'Гонка Колесо — игра для двоих на одной клавиатуре',
+    description:'Бесплатная детская гонка для двух игроков на одной клавиатуре, телефоне или планшете. Без рекламы, без регистрации.',
+    language:'Язык',back:'← Все игры',name:'Гонка Колесо',track:'Трасса для двух гонщиков',
+    p1:'Жёлтый',p2:'Синий',lap:'Круг',best:'Лучший',
+    intro:'Две машины, одна клавиатура или один экран. Кто первым проедет все круги, тот победил.',
+    laps3:'3 круга',laps5:'5 кругов',laps10:'10 кругов',modeSimple:'Простое управление',modeCar:'Как в машине',
+    start:'Старт',again:'Ещё заезд',go:'ГАЗ!',startFinish:'СТАРТ / ФИНИШ',
+    wins:'побеждает!',result:'Время {time}. Лучший круг: {w}, {o}.',behind:'Соперник отстал на {n} круга.',
+    up:'вверх',down:'вниз',left:'влево',right:'вправо',simpleTail:'Машина едет туда, куда нажали.',
+    gas:'газ',brake:'тормоз',steer:'руль',
+    rules:'На траве машина сильно тормозит. Срезать через газон не выйдет: круг засчитывается только по трассе. Машины толкаются, так что можно вытолкнуть соперника.'
+  }
+};
 const W=960,H=600,HW=44,SEG=16;
 const CTRL=[[160,480],[480,520],[800,480],[880,340],[820,200],[680,170],[600,260],[480,300],[380,200],[260,90],[130,140],[90,300]];
 const path=[];
@@ -144,7 +226,7 @@ function paintTrack(){
     c.save();c.translate(a[0]+nx*off+ux*along,a[1]+ny*off+uy*along);c.rotate(Math.atan2(uy,ux));c.fillRect(0,0,sq,sq);c.restore();
   }
   c.font='12px "Exo 2", sans-serif';c.fillStyle='rgba(242,243,245,.5)';c.textAlign='center';
-  c.fillText('СТАРТ / ФІНІШ',a[0]-10,a[1]+HW+24);
+  c.fillText(I18N.t('startFinish'),a[0]-10,a[1]+HW+24);
 }
 
 function nearest(x,y){
@@ -158,15 +240,15 @@ function nearest(x,y){
   return {i:bi,d:Math.sqrt(best)};
 }
 
-const keys=new Set();
+const keys=new Set(),STICKS=[{x:0,y:0},{x:0,y:0}];
 let cars=[],marks=[],state='intro',stateT=0,raceTime=0,LAPS=3,winner=-1,MODE='simple';
 const DRV=[
-  {name:'Жовтий',c:'#ffc93c',k:{u:'KeyW',d:'KeyS',l:'KeyA',r:'KeyD'},side:-1},
-  {name:'Синій',c:'#3d8bff',k:{u:'ArrowUp',d:'ArrowDown',l:'ArrowLeft',r:'ArrowRight'},side:1}
+  {name:'p1',c:'#ffc93c',k:{u:'KeyW',d:'KeyS',l:'KeyA',r:'KeyD'},side:-1},
+  {name:'p2',c:'#3d8bff',k:{u:'ArrowUp',d:'ArrowDown',l:'ArrowLeft',r:'ArrowRight'},side:1}
 ];
 function placeCars(){
   const si=N-4,p=path[si],q=path[si+1],a=Math.atan2(q[1]-p[1],q[0]-p[0]);
-  cars=DRV.map((d,i)=>({...d,x:p[0]-Math.sin(a)*20*d.side,y:p[1]+Math.cos(a)*20*d.side,a,v:0,prog:-4,last:si,laps:0,lapStart:0,best:null,done:false,t:null}));
+  cars=DRV.map((d,i)=>({...d,stick:STICKS[i],x:p[0]-Math.sin(a)*20*d.side,y:p[1]+Math.cos(a)*20*d.side,a,v:0,prog:-4,last:si,laps:0,lapStart:0,best:null,done:false,t:null}));
 }
 function start(){
   placeCars();marks=[];raceTime=0;winner=-1;
@@ -181,16 +263,22 @@ function update(dt){
   for(const c of cars){
     const n=nearest(c.x,c.y),road=n.d<HW;
     const a0=c.a,L=keys.has(c.k.l),Rt=keys.has(c.k.r),U=keys.has(c.k.u),D=keys.has(c.k.d);
+    const s=c.stick,sm=Math.hypot(s.x,s.y);
     let up=false,dn=false,st=0;
     if(MODE==='simple'){
       // screen-relative: the car turns toward the pressed direction and drives there
-      const ix=(Rt?1:0)-(L?1:0),iy=(D?1:0)-(U?1:0);
+      let ix=(Rt?1:0)-(L?1:0),iy=(D?1:0)-(U?1:0),push=true;
+      if(sm>.2){ix=s.x;iy=s.y;push=sm>.45}
       if(ix||iy){
         let diff=Math.atan2(iy,ix)-c.a;diff=Math.atan2(Math.sin(diff),Math.cos(diff));
         c.a+=Math.max(-.09*k,Math.min(.09*k,diff));
-        if(Math.abs(diff)<1.6)up=true;else dn=c.v>1;
+        if(Math.abs(diff)<1.6)up=push;else dn=c.v>1;
       }
-    }else{up=U;dn=D;st=(Rt?1:0)-(L?1:0)}
+    }else{
+      up=U||s.y<-.35;dn=D||s.y>.35;
+      st=(Rt?1:0)-(L?1:0);
+      if(!st&&Math.abs(s.x)>.2)st=s.x;
+    }
     if(up)c.v+=.11*k;
     if(dn)c.v-=(c.v>0?.22:.07)*k;
     const max=road?5.4:2.2;
@@ -221,11 +309,19 @@ function update(dt){
 }
 function finish(){
   state='done';
+  overlayText();overlay.hidden=false;goBtn.focus();
+}
+function overlayText(){
+  const t=I18N.t;
+  if(state!=='done'){
+    ovTitle.textContent=t('name');ovTitle.style.color='';ovText.textContent=t('intro');goBtn.textContent=t('start');
+    return;
+  }
   const w=cars[winner],o=cars[1-winner];
-  ovTitle.textContent=w.name+' перемагає!';ovTitle.style.color=w.c;
-  const gap=o.prog>0?' Суперник відстав на '+Math.max(0,Math.round((LAPS*N-o.prog)/N*100)/100).toFixed(2)+' кола.':'';
-  ovText.textContent='Час '+fmt(w.t)+'. Краще коло: '+w.name+' '+fmt(w.best)+', '+o.name+' '+(o.best===null?'—':fmt(o.best))+'.'+gap;
-  goBtn.textContent='Ще заїзд';overlay.hidden=false;goBtn.focus();
+  ovTitle.textContent=t(w.name)+' '+t('wins');ovTitle.style.color=w.c;
+  const gap=o.prog>0?' '+t('behind').replace('{n}',Math.max(0,Math.round((LAPS*N-o.prog)/N*100)/100).toFixed(2)):'';
+  ovText.textContent=t('result').replace('{time}',fmt(w.t)).replace('{w}',t(w.name)+' '+fmt(w.best)).replace('{o}',t(o.name)+' '+fmt(o.best))+gap;
+  goBtn.textContent=t('again');
 }
 
 function fmt(ms){if(ms===null)return '—';const s=ms/1000,m=Math.floor(s/60),r=(s%60).toFixed(2).padStart(5,'0');return m+':'+r}
@@ -248,7 +344,7 @@ function draw(){
   for(const c of cars)drawCar(c);
   let txt='';
   if(state==='count')txt=String(Math.ceil(stateT/1000));
-  else if(state==='race'&&stateT>0)txt='ГАЗ!';
+  else if(state==='race'&&stateT>0)txt=I18N.t('go');
   if(txt){
     ctx.font='72px "Russo One", "Arial Black", sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.lineWidth=8;ctx.strokeStyle='#15171c';ctx.strokeText(txt,W/2,H/2-20);
@@ -273,11 +369,15 @@ document.querySelectorAll('#lapsPick button').forEach(b=>b.addEventListener('cli
   document.querySelectorAll('#lapsPick button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
   hud();
 }));
-const LEG={
-  simple:['<kbd>W</kbd> вгору, <kbd>S</kbd> вниз, <kbd>A</kbd> вліво, <kbd>D</kbd> вправо. Машина їде туди, куди натиснули.','<kbd>↑</kbd> вгору, <kbd>↓</kbd> вниз, <kbd>←</kbd> вліво, <kbd>→</kbd> вправо. Машина їде туди, куди натиснули.'],
-  car:['<kbd>W</kbd> газ, <kbd>S</kbd> гальмо, <kbd>A</kbd> <kbd>D</kbd> кермо','<kbd>↑</kbd> газ, <kbd>↓</kbd> гальмо, <kbd>←</kbd> <kbd>→</kbd> кермо']
-};
-function legend(){$('leg1').innerHTML=LEG[MODE][0];$('leg2').innerHTML=LEG[MODE][1]}
+const KEYCAPS=[['W','S','A','D'],['↑','↓','←','→']];
+function legend(){
+  const t=I18N.t,kb=x=>'<kbd>'+x+'</kbd>';
+  KEYCAPS.forEach(([u,d,l,r],i)=>{
+    $('leg'+(i+1)).innerHTML=MODE==='simple'
+      ?kb(u)+' '+t('up')+', '+kb(d)+' '+t('down')+', '+kb(l)+' '+t('left')+', '+kb(r)+' '+t('right')+'. '+t('simpleTail')
+      :kb(u)+' '+t('gas')+', '+kb(d)+' '+t('brake')+', '+kb(l)+' '+kb(r)+' '+t('steer');
+  });
+}
 document.querySelectorAll('#modePick button').forEach(b=>b.addEventListener('click',()=>{
   MODE=b.dataset.m;
   document.querySelectorAll('#modePick button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
@@ -294,17 +394,27 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>keys.delete(e.code));
 addEventListener('blur',()=>keys.clear());
 
-document.querySelectorAll('.pad button').forEach(btn=>{
-  const k=btn.dataset.k;
-  const on=e=>{e.preventDefault();keys.add(k);btn.classList.add('on')};
-  const off=()=>{keys.delete(k);btn.classList.remove('on')};
-  btn.addEventListener('pointerdown',on);
-  ['pointerup','pointerleave','pointercancel'].forEach(ev=>btn.addEventListener(ev,off));
+// Touch joysticks: x and y run from -1 to 1, screen-relative like the arrow keys.
+document.querySelectorAll('.pad').forEach((pad,i)=>{
+  const s=STICKS[i],knob=pad.querySelector('.knob');
+  let id=null;
+  const move=e=>{
+    const r=pad.getBoundingClientRect(),reach=r.width*.36;
+    let x=(e.clientX-r.left-r.width/2)/reach,y=(e.clientY-r.top-r.height/2)/reach;
+    const m=Math.hypot(x,y);if(m>1){x/=m;y/=m}
+    s.x=x;s.y=y;knob.style.setProperty('--x',x*reach+'px');knob.style.setProperty('--y',y*reach+'px');
+  };
+  const end=e=>{if(e.pointerId!==id)return;id=null;s.x=s.y=0;knob.style.setProperty('--x','0px');knob.style.setProperty('--y','0px')};
+  pad.addEventListener('pointerdown',e=>{e.preventDefault();id=e.pointerId;pad.setPointerCapture(id);move(e)});
+  pad.addEventListener('pointermove',e=>{if(e.pointerId===id)move(e)});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>pad.addEventListener(ev,end));
+  pad.addEventListener('contextmenu',e=>e.preventDefault());
 });
 
 fit();addEventListener('resize',fit);
 if(document.fonts)document.fonts.ready.then(paintTrack);
-placeCars();hud();legend();
+placeCars();hud();
+I18N.init(TEXTS,()=>{legend();overlayText();paintTrack()});
 let last=performance.now();
 function loop(t){const dt=Math.min(50,t-last);last=t;update(dt);draw();hud();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

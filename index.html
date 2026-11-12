@@ -4,8 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Дитячі ігри — безкоштовно, без реклами</title>
-<meta name="description" content="Прості безкоштовні ігри для дітей українською мовою. Без реклами, без реєстрації, грають прямо в браузері на комп'ютері чи планшеті.">
+<meta name="description" content="Прості безкоштовні ігри для дітей. Без реклами, без реєстрації, грають прямо в браузері на комп'ютері чи планшеті.">
 <link rel="canonical" href="https://artem-vovchenko01.github.io/kids-games/">
+<link rel="alternate" hreflang="uk" href="https://artem-vovchenko01.github.io/kids-games/?lang=uk">
+<link rel="alternate" hreflang="en" href="https://artem-vovchenko01.github.io/kids-games/?lang=en">
+<link rel="alternate" hreflang="pl" href="https://artem-vovchenko01.github.io/kids-games/?lang=pl">
+<link rel="alternate" hreflang="ru" href="https://artem-vovchenko01.github.io/kids-games/?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://artem-vovchenko01.github.io/kids-games/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Дитячі ігри">
 <meta property="og:description" content="Безкоштовні ігри для дітей. Без реклами, без реєстрації.">
@@ -22,10 +27,14 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font-family:var(--body);font-size:16px;line-height:1.5;padding:24px 16px 32px}
+body{font-family:var(--body);font-size:1rem;line-height:1.5;padding:16px 16px 32px}
 .wrap{max-width:960px;margin:0 auto}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:8px}
+.lang{display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--muted)}
+.lang select{font:inherit;font-weight:600;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:4px 8px;cursor:pointer}
+.lang select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 header{text-align:center;margin-bottom:28px}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(30px,7vw,52px);margin:0;line-height:1.1}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.875rem,7vw,3.25rem);margin:0;line-height:1.1}
 header p{margin:8px auto 0;color:var(--muted);max-width:46ch}
 .games{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;list-style:none;margin:0;padding:0}
 .card{display:flex;flex-direction:column;height:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
@@ -33,12 +42,12 @@ header p{margin:8px auto 0;color:var(--muted);max-width:46ch}
 .card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .card svg{display:block;width:100%;height:auto}
 .card .txt{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.card h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0}
-.card p{margin:0;color:var(--muted);font-size:15px}
+.card h2{font-family:var(--display);font-weight:400;font-size:1.375rem;margin:0}
+.card p{margin:0;color:var(--muted);font-size:.9375rem}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
-.tags span{font-size:12px;font-weight:600;background:var(--bg);border-radius:999px;padding:2px 10px}
+.tags span{font-size:.75rem;font-weight:600;background:var(--bg);border-radius:999px;padding:2px 10px}
 .play{align-self:flex-start;margin-top:8px;font-family:var(--display);background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:6px 18px}
-footer{margin-top:40px;text-align:center;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:10px;align-items:center}
+footer{margin-top:40px;text-align:center;color:var(--muted);font-size:.875rem;display:flex;flex-direction:column;gap:10px;align-items:center}
 footer p{margin:0;max-width:60ch}
 .donate{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .donate:hover{color:var(--ink)}
@@ -46,9 +55,15 @@ footer p{margin:0;max-width:60ch}
 </head>
 <body>
 <div class="wrap">
+  <div class="topbar">
+    <label class="lang">🌐 <span data-i18n="language">Мова</span>
+      <select class="lang-pick"></select>
+    </label>
+  </div>
+
   <header>
-    <h1>Дитячі ігри</h1>
-    <p>Прості ігри для дітей. Без реклами і без реєстрації. Обирай гру й грай прямо в браузері.</p>
+    <h1 data-i18n="h1">Дитячі ігри</h1>
+    <p data-i18n="intro">Прості ігри для дітей. Без реклами і без реєстрації. Обирай гру й грай прямо в браузері.</p>
   </header>
 
   <main>
@@ -63,10 +78,10 @@ footer p{margin:0;max-width:60ch}
             <rect x="152" y="152" width="26" height="13" rx="4" fill="#3d8bff"/>
           </svg>
           <div class="txt">
-            <h2>Гонка Колесо</h2>
-            <p>Дві машини на одній трасі. Хто перший проїде всі кола, той переміг.</p>
-            <div class="tags"><span>2 гравці</span><span>клавіатура</span><span>планшет</span></div>
-            <span class="play">Грати</span>
+            <h2 data-i18n="koleso.name">Гонка Колесо</h2>
+            <p data-i18n="koleso.about">Дві машини на одній трасі. Хто перший проїде всі кола, той переміг.</p>
+            <div class="tags"><span data-i18n="tag.2p">2 гравці</span><span data-i18n="tag.keyboard">клавіатура</span><span data-i18n="tag.phone">телефон</span><span data-i18n="tag.tablet">планшет</span></div>
+            <span class="play" data-i18n="play">Грати</span>
           </div>
         </a>
       </li>
@@ -74,9 +89,67 @@ footer p{margin:0;max-width:60ch}
   </main>
 
   <footer>
-    <p>Ігри безкоштовні й такими залишаться. Тут немає реклами, реєстрації та покупок.</p>
-    <a class="donate" id="donate" href="" target="_blank" rel="noopener" hidden>☕ Підтримати автора</a>
+    <p data-i18n="free">Ігри безкоштовні й такими залишаться. Тут немає реклами, реєстрації та покупок.</p>
+    <a class="donate" id="donate" href="" target="_blank" rel="noopener" hidden>☕ <span data-i18n="donate">Підтримати автора</span></a>
   </footer>
 </div>
+
+<script src="lang.js"></script>
+<script>
+I18N.init({
+  uk: {
+    title: 'Дитячі ігри — безкоштовно, без реклами',
+    description: "Прості безкоштовні ігри для дітей. Без реклами, без реєстрації, грають прямо в браузері на комп'ютері чи планшеті.",
+    language: 'Мова',
+    h1: 'Дитячі ігри',
+    intro: 'Прості ігри для дітей. Без реклами і без реєстрації. Обирай гру й грай прямо в браузері.',
+    'koleso.name': 'Гонка Колесо',
+    'koleso.about': 'Дві машини на одній трасі. Хто перший проїде всі кола, той переміг.',
+    'tag.2p': '2 гравці', 'tag.keyboard': 'клавіатура', 'tag.phone': 'телефон', 'tag.tablet': 'планшет',
+    play: 'Грати',
+    free: 'Ігри безкоштовні й такими залишаться. Тут немає реклами, реєстрації та покупок.',
+    donate: 'Підтримати автора'
+  },
+  en: {
+    title: "Kids' games — free, no ads",
+    description: 'Simple free games for kids. No ads, no sign-up. Play right in the browser on a computer or tablet.',
+    language: 'Language',
+    h1: "Kids' games",
+    intro: 'Simple games for kids. No ads and no sign-up. Pick a game and play right in the browser.',
+    'koleso.name': 'Wheel Race',
+    'koleso.about': 'Two cars on one track. First to finish all the laps wins.',
+    'tag.2p': '2 players', 'tag.keyboard': 'keyboard', 'tag.phone': 'phone', 'tag.tablet': 'tablet',
+    play: 'Play',
+    free: 'The games are free and will stay free. No ads, no sign-up, no purchases.',
+    donate: 'Support the author'
+  },
+  pl: {
+    title: 'Gry dla dzieci — za darmo, bez reklam',
+    description: 'Proste darmowe gry dla dzieci. Bez reklam i bez rejestracji. Graj od razu w przeglądarce na komputerze lub tablecie.',
+    language: 'Język',
+    h1: 'Gry dla dzieci',
+    intro: 'Proste gry dla dzieci. Bez reklam i bez rejestracji. Wybierz grę i graj od razu w przeglądarce.',
+    'koleso.name': 'Wyścig Koło',
+    'koleso.about': 'Dwa samochody na jednym torze. Kto pierwszy przejedzie wszystkie okrążenia, wygrywa.',
+    'tag.2p': '2 graczy', 'tag.keyboard': 'klawiatura', 'tag.phone': 'telefon', 'tag.tablet': 'tablet',
+    play: 'Graj',
+    free: 'Gry są darmowe i takie zostaną. Nie ma tu reklam, rejestracji ani zakupów.',
+    donate: 'Wesprzyj autora'
+  },
+  ru: {
+    title: 'Детские игры — бесплатно, без рекламы',
+    description: 'Простые бесплатные игры для детей. Без рекламы, без регистрации, играют прямо в браузере на компьютере или планшете.',
+    language: 'Язык',
+    h1: 'Детские игры',
+    intro: 'Простые игры для детей. Без рекламы и без регистрации. Выбирай игру и играй прямо в браузере.',
+    'koleso.name': 'Гонка Колесо',
+    'koleso.about': 'Две машины на одной трассе. Кто первым проедет все круги, тот победил.',
+    'tag.2p': '2 игрока', 'tag.keyboard': 'клавиатура', 'tag.phone': 'телефон', 'tag.tablet': 'планшет',
+    play: 'Играть',
+    free: 'Игры бесплатные и такими останутся. Здесь нет рекламы, регистрации и покупок.',
+    donate: 'Поддержать автора'
+  }
+});
+</script>
 </body>
 </html>

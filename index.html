@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дитячі ігри — безкоштовно, без реклами</title>
+<meta name="description" content="Прості безкоштовні ігри для дітей українською мовою. Без реклами, без реєстрації, грають прямо в браузері на комп'ютері чи планшеті.">
+<link rel="canonical" href="https://artem-vovchenko01.github.io/kids-games/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Дитячі ігри">
+<meta property="og:description" content="Безкоштовні ігри для дітей. Без реклами, без реєстрації.">
+<meta property="og:url" content="https://artem-vovchenko01.github.io/kids-games/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%88%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#fff8ec; --card:#ffffff; --ink:#1f2330; --muted:#5f6577; --line:#f0e2c8;
+  --accent:#ff7a45; --accent-ink:#ffffff;
+  --display:"Russo One","Arial Black",system-ui,sans-serif;
+  --body:"Exo 2",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:16px;line-height:1.5;padding:24px 16px 32px}
+.wrap{max-width:960px;margin:0 auto}
+header{text-align:center;margin-bottom:28px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(30px,7vw,52px);margin:0;line-height:1.1}
+header p{margin:8px auto 0;color:var(--muted);max-width:46ch}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;list-style:none;margin:0;padding:0}
+.card{display:flex;flex-direction:column;height:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.card:hover,.card:focus-visible{transform:translateY(-3px);box-shadow:0 10px 24px rgba(31,35,48,.12)}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.card svg{display:block;width:100%;height:auto}
+.card .txt{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0}
+.card p{margin:0;color:var(--muted);font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+.tags span{font-size:12px;font-weight:600;background:var(--bg);border-radius:999px;padding:2px 10px}
+.play{align-self:flex-start;margin-top:8px;font-family:var(--display);background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:6px 18px}
+footer{margin-top:40px;text-align:center;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:10px;align-items:center}
+footer p{margin:0;max-width:60ch}
+.donate{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.donate:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Дитячі ігри</h1>
+    <p>Прості ігри для дітей. Без реклами і без реєстрації. Обирай гру й грай прямо в браузері.</p>
+  </header>
+
+  <main>
+    <ul class="games">
+      <li>
+        <a class="card" href="games/koleso/">
+          <svg viewBox="0 0 320 180" aria-hidden="true">
+            <rect width="320" height="180" fill="#1f4d2b"/>
+            <path d="M40 140 C 90 170, 230 170, 280 130 C 310 100, 290 40, 240 40 C 200 40, 190 80, 160 80 C 120 80, 110 20, 70 30 C 30 40, 15 110, 40 140 Z" fill="none" stroke="#e63946" stroke-width="34" stroke-linejoin="round"/>
+            <path d="M40 140 C 90 170, 230 170, 280 130 C 310 100, 290 40, 240 40 C 200 40, 190 80, 160 80 C 120 80, 110 20, 70 30 C 30 40, 15 110, 40 140 Z" fill="none" stroke="#2c2f37" stroke-width="26" stroke-linejoin="round"/>
+            <rect x="120" y="148" width="26" height="13" rx="4" fill="#ffc93c"/>
+            <rect x="152" y="152" width="26" height="13" rx="4" fill="#3d8bff"/>
+          </svg>
+          <div class="txt">
+            <h2>Гонка Колесо</h2>
+            <p>Дві машини на одній трасі. Хто перший проїде всі кола, той переміг.</p>
+            <div class="tags"><span>2 гравці</span><span>клавіатура</span><span>планшет</span></div>
+            <span class="play">Грати</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </main>
+
+  <footer>
+    <p>Ігри безкоштовні й такими залишаться. Тут немає реклами, реєстрації та покупок.</p>
+    <a class="donate" id="donate" href="" target="_blank" rel="noopener" hidden>☕ Підтримати автора</a>
+  </footer>
+</div>
+</body>
+</html>

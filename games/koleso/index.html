@@ -20,10 +20,12 @@
 <style>
 html{box-sizing:border-box}
 body{margin:0}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap}
+.tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fsbtn{font:inherit;font-size:.875rem;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:3px 10px;cursor:pointer}
 .back{color:var(--muted);text-decoration:none;font-size:14px}
 .back:hover{color:var(--ink)}
-.lang select{font:inherit;font-size:14px;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:3px 6px;cursor:pointer}
+.lang select{font:inherit;font-size:.875rem;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:3px 6px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -51,7 +53,7 @@ body{font-family:var(--body);font-size:.9375rem;padding-left:max(16px,env(safe-a
 h1{font-family:var(--display);font-weight:400;font-size:clamp(1rem,3vw,1.5rem);margin:0;letter-spacing:.02em;text-wrap:balance}
 .clock{font-family:var(--display);font-size:clamp(.875rem,2.4vw,1.125rem);color:var(--muted);font-variant-numeric:tabular-nums}
 /* Canvas and overlay share one grid cell, so a tall start screen grows the box instead of clipping. */
-.stage{display:grid;width:100%;border-radius:4px;overflow:hidden;box-shadow:0 0 0 2px var(--line);background:var(--pit)}
+.stage{display:grid;width:min(100%,calc((100svh - 200px) * 1.6));min-width:min(100%,320px);margin-inline:auto;border-radius:4px;overflow:hidden;box-shadow:0 0 0 2px var(--line);background:var(--pit)}
 .stage>*{grid-area:1/1}
 canvas{display:block;width:100%;aspect-ratio:8/5;align-self:center}
 .overlay{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(21,23,28,.8);text-align:center;padding:16px;min-width:0}
@@ -79,6 +81,12 @@ kbd{font-family:var(--body);font-size:.75rem;background:var(--line);border-radiu
 }
 @media (max-width:600px){.board{grid-template-columns:1fr 1fr}.mid{grid-column:1/-1;grid-row:1}.legend{grid-template-columns:1fr}}
 /* Phone or tablet held sideways: one joystick on each side of the track, for two kids. */
+/* Full screen: the track takes all the height left under the scoreboard. */
+.fs body{padding-block:8px}
+.fs .wrap{max-width:none;height:calc(100svh - 16px)}
+.fs .rules{display:none}
+.fs .stage{flex:1;min-height:0;width:100%}
+.fs canvas{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;min-height:0}
 @media (pointer:coarse) and (orientation:landscape){
   body{padding-block:8px}
   .wrap{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"top top top" "board board board" "p1 stage p2" "rules rules rules";gap:8px 12px;align-items:center;max-width:none}
@@ -88,6 +96,9 @@ kbd{font-family:var(--body);font-size:.75rem;background:var(--line);border-radiu
   .stage{grid-area:stage;justify-self:center;width:min(100%,calc((100svh - 130px) * 1.6))}
   .pads{display:contents}
   .pad{--size:min(150px,40svh,22vw)}
+  .fs .wrap{height:auto}
+  .fs .stage{width:min(100%,calc((100svh - 150px) * 1.6))}
+  .fs canvas{height:auto;aspect-ratio:8/5}
   .pad.p1{grid-area:p1} .pad.p2{grid-area:p2}
 }
 </style>
@@ -95,7 +106,10 @@ kbd{font-family:var(--body);font-size:.75rem;background:var(--line);border-radiu
 <div class="wrap">
   <div class="top">
     <a class="back" href="../../" data-i18n="back">← Усі ігри</a>
-    <label class="lang">🌐 <select class="lang-pick" data-i18n-attr="aria-label:language"></select></label>
+    <div class="tools">
+      <button class="fsbtn" id="fsBtn" hidden>⛶ <span data-i18n="fullscreen">На весь екран</span></button>
+      <label class="lang">🌐 <select class="lang-pick" data-i18n-attr="aria-label:language"></select></label>
+    </div>
   </div>
   <div class="board">
     <div class="drv p1"><span class="pos" id="pos1">1</span><span class="nm" data-i18n="p1">Жовтий</span><span class="row"><span data-i18n="lap">Коло</span> <b id="lap1">1/3</b></span><span class="row"><span data-i18n="best">Краще</span> <b id="best1">—</b></span></div>
@@ -139,7 +153,7 @@ const TEXTS={
   uk:{
     title:'Гонка Колесо — гра для двох на одній клавіатурі',
     description:'Безкоштовна дитяча гонка для двох гравців на одній клавіатурі, телефоні чи планшеті. Без реклами, без реєстрації.',
-    language:'Мова',back:'← Усі ігри',name:'Гонка Колесо',track:'Траса для двох гонщиків',
+    language:'Мова',fullscreen:'На весь екран',exitFullscreen:'Вийти з повного екрана',back:'← Усі ігри',name:'Гонка Колесо',track:'Траса для двох гонщиків',
     p1:'Жовтий',p2:'Синій',lap:'Коло',best:'Краще',
     intro:'Дві машини, одна клавіатура чи один екран. Хто перший проїде всі кола, той переміг.',
     laps3:'3 кола',laps5:'5 кіл',laps10:'10 кіл',modeSimple:'Просте керування',modeCar:'Як у машині',
@@ -152,7 +166,7 @@ const TEXTS={
   en:{
     title:'Wheel Race — a two-player game on one keyboard',
     description:'A free racing game for two kids on one keyboard, phone or tablet. No ads, no sign-up.',
-    language:'Language',back:'← All games',name:'Wheel Race',track:'Track for two racers',
+    language:'Language',fullscreen:'Full screen',exitFullscreen:'Exit full screen',back:'← All games',name:'Wheel Race',track:'Track for two racers',
     p1:'Yellow',p2:'Blue',lap:'Lap',best:'Best',
     intro:'Two cars, one keyboard or one screen. First to finish all the laps wins.',
     laps3:'3 laps',laps5:'5 laps',laps10:'10 laps',modeSimple:'Simple controls',modeCar:'Like a real car',
@@ -165,7 +179,7 @@ const TEXTS={
   pl:{
     title:'Wyścig Koło — gra dla dwóch osób na jednej klawiaturze',
     description:'Darmowa wyścigówka dla dwójki dzieci na jednej klawiaturze, telefonie lub tablecie. Bez reklam i bez rejestracji.',
-    language:'Język',back:'← Wszystkie gry',name:'Wyścig Koło',track:'Tor dla dwóch kierowców',
+    language:'Język',fullscreen:'Pełny ekran',exitFullscreen:'Zamknij pełny ekran',back:'← Wszystkie gry',name:'Wyścig Koło',track:'Tor dla dwóch kierowców',
     p1:'Żółty',p2:'Niebieski',lap:'Okrążenie',best:'Najlepsze',
     intro:'Dwa samochody, jedna klawiatura albo jeden ekran. Kto pierwszy przejedzie wszystkie okrążenia, wygrywa.',
     laps3:'3 okrążenia',laps5:'5 okrążeń',laps10:'10 okrążeń',modeSimple:'Proste sterowanie',modeCar:'Jak w samochodzie',
@@ -178,7 +192,7 @@ const TEXTS={
   ru:{
     title:'Гонка Колесо — игра для двоих на одной клавиатуре',
     description:'Бесплатная детская гонка для двух игроков на одной клавиатуре, телефоне или планшете. Без рекламы, без регистрации.',
-    language:'Язык',back:'← Все игры',name:'Гонка Колесо',track:'Трасса для двух гонщиков',
+    language:'Язык',fullscreen:'На весь экран',exitFullscreen:'Выйти из полноэкранного режима',back:'← Все игры',name:'Гонка Колесо',track:'Трасса для двух гонщиков',
     p1:'Жёлтый',p2:'Синий',lap:'Круг',best:'Лучший',
     intro:'Две машины, одна клавиатура или один экран. Кто первым проедет все круги, тот победил.',
     laps3:'3 круга',laps5:'5 кругов',laps10:'10 кругов',modeSimple:'Простое управление',modeCar:'Как в машине',
@@ -388,6 +402,7 @@ goBtn.addEventListener('click',start);
 const GAME_KEYS=new Set(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space']);
 addEventListener('keydown',e=>{
   if(GAME_KEYS.has(e.code))e.preventDefault();
+  if(e.code==='KeyF'&&!e.repeat&&fsOK&&!e.target.closest?.('select')){toggleFs();return}
   if((state==='intro'||state==='done')&&(e.code==='Space'||e.code==='Enter')&&!e.repeat&&document.activeElement?.closest?.('.laps')==null){e.preventDefault();start();return}
   keys.add(e.code);
 });
@@ -415,6 +430,27 @@ fit();addEventListener('resize',fit);
 if(document.fonts)document.fonts.ready.then(paintTrack);
 placeCars();hud();
 I18N.init(TEXTS,()=>{legend();overlayText();paintTrack()});
+
+// Full screen covers the whole page so touch joysticks stay usable. iPhone Safari has no API for it, so the button hides there.
+const root=document.documentElement,fsBtn=$('fsBtn'),fsLabel=fsBtn.querySelector('span');
+const fsOK=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+function toggleFs(){
+  if(fsEl())(document.exitFullscreen||document.webkitExitFullscreen).call(document);
+  else (root.requestFullscreen||root.webkitRequestFullscreen).call(root);
+}
+function onFs(){
+  const on=!!fsEl();
+  root.classList.toggle('fs',on);
+  fsLabel.dataset.i18n=on?'exitFullscreen':'fullscreen';fsLabel.textContent=I18N.t(fsLabel.dataset.i18n);
+  fsBtn.blur();
+}
+if(fsOK){
+  fsBtn.hidden=false;
+  fsBtn.addEventListener('click',toggleFs);
+  document.addEventListener('fullscreenchange',onFs);
+  document.addEventListener('webkitfullscreenchange',onFs);
+}
 let last=performance.now();
 function loop(t){const dt=Math.min(50,t-last);last=t;update(dt);draw();hud();requestAnimationFrame(loop)}
 requestAnimationFrame(loop);

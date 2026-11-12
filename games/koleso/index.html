@@ -27,6 +27,7 @@ body{margin:0}
 .back:hover{color:var(--ink)}
 .lang select{font:inherit;font-size:.875rem;color:var(--ink);background:var(--board);border:2px solid var(--line);border-radius:4px;padding:3px 6px;cursor:pointer}
 </style>
+<script data-goatcounter="https://artemvovchenko.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <style>
@@ -266,6 +267,7 @@ function placeCars(){
 }
 function start(){
   placeCars();marks=[];raceTime=0;winner=-1;
+  window.goatcounter?.count?.({path:'koleso-race',title:'Koleso: race started',event:true});
   overlay.hidden=true;state='count';stateT=3000;
 }
 

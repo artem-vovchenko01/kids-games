@@ -28,3 +28,8 @@ adds `<select class="lang-pick">`, and calls `I18N.init(texts, onChange)` with
 3. Add the game URL to `sitemap.xml`.
 4. Check it on a phone: text sizes in `rem`, touch controls under
    `@media (pointer:coarse)`.
+
+## Search engines
+
+`google76afe9976e66fe65.html` proves site ownership to Google Search Console.
+Keep it: removing it unverifies the site.
